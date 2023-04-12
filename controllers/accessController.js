@@ -37,29 +37,33 @@ const AController = {
         try {
             const err = validationResult(req)
             if (err.isEmpty()) {
+                
                 const usuario = await User.findOne({email: req.body.email})
                 if (usuario == null) {
-                    res.status(401).json({msg: 'El email o la contraseña son incorrectos'})
+                    res.status(401).json({msg: 'El email o la contraseña son incorrectos...'})
                 }
+            
                 if (!bcrypt.compareSync(req.body.password, usuario.password)) {
-                    res.status(401).json({msg: 'El email o la contraseña son incorrectos'})
+                    res.status(401).json({msg: 'El email o la contraseña son incorrectos...'})
+                }else{
+                    const token = await generateJWT({
+                        id: usuario._id,
+                        name: usuario.name
+                    })
+                    const userSession = {
+                        _id: usuario._id,
+                        name: usuario.name,
+                        email: usuario.email,
+                        token: token,
+                    }
+    
+                    res.cookie("_sessionbe", userSession, {maxAge: 60000 * 60 * 24 * 15})
+
+                    req.session.user = userSession;
+    
+                    res.status(201).json({ userSession, logger: true, msg: 'Login Exitoso...' })
                 }
 
-                const token = await generateJWT({
-                    id: usuario._id,
-                    name: usuario.name
-                })
-                const userSession = {
-                    _id: usuario._id,
-                    name: usuario.name,
-                    email: usuario.email,
-                    token: token,
-                }
-
-                res.cookie("_sessionbe", userSession, {maxAge: 60000 * 60 * 24 * 15})
-                req.session.user = userSession;
-
-                res.status(201).json({ userSession, logger: true, msg: 'Login Exitoso...' })
             } else {
                 res.status(501).json(err)
             }

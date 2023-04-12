@@ -71,7 +71,7 @@ const cuponController = {
         }
     },
     registroUserWithCupon: async (req, res) =>{
-        //try {
+        try {
             const err = validationResult(req)
             if (err.isEmpty()) {
                 const uniqueEmail = await User.findOne({email: req.body.email})
@@ -93,9 +93,9 @@ const cuponController = {
             } else {
                 res.status(501).json(err)
             }
-        /*} catch (error) {
+        } catch (error) {
             res.status(501).json({msg: 'No se pudo registrar al usuario con el cupón...', error})
-        }*/
+        }
     }
 
 }
