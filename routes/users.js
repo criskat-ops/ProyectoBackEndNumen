@@ -2,6 +2,7 @@ var express = require("express")
 var router = express.Router()
 
 const userController = require('../controllers/userController')
+const randomeUser = require('../controllers/axiosController')
 
 const authSession = require('../middlewares/authSession')
 const authJWT = require('../middlewares/authJWT')
@@ -37,5 +38,7 @@ router.post('/deleteuser',
     .withMessage('Ingresa un ID de usuario'),
 
 ], authSession, authJWT, validateId2, userController.eliminarUser)
+
+router.get('/randomuser', authSession, authJWT, randomeUser.randomUser)
 
 module.exports = router;
