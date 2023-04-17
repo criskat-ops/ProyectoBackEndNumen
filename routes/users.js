@@ -10,7 +10,7 @@ const { validateId, validateId2 } = require('../middlewares/validateId')
 
 const { check } = require("express-validator")
 
-router.post('/edituserpass',
+router.put('/edituserpass',
 [
     check('user_id')
       .not()
@@ -30,7 +30,7 @@ router.post('/edituserpass',
       .withMessage("La contraseña debe contener entre 6 a 15 caracteres."),
 ], authSession, authJWT, validateId2, userController.editPasswordUser)
 
-router.post('/deleteuser',
+router.delete('/deleteuser',
 [
   check('user_id')
     .not()
